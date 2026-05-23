@@ -6,7 +6,7 @@ on:
       - main  # El pipeline se ejecuta cuando se hace push a la rama 'main'
 
 jobs:
-  # 1. Análisis de Seguridad con Snyk
+  # 1. Análisis de Seguridad con Snyk .
   snyk-scan:
     name: Snyk Security Scan
     runs-on: ubuntu-latest
