@@ -3,10 +3,10 @@ name: Spring Boot CI/CD Pipeline
 on:
   push:
     branches:
-      - main  # El pipeline se ejecuta cuando se hace push a la rama 'main'
+      - main
 
 jobs:
-  # 1. Análisis de Seguridad con Snyk .
+  # 1. Análisis de Seguridad con Snyk
   snyk-scan:
     name: Snyk Security Scan
     runs-on: ubuntu-latest
@@ -21,6 +21,17 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2
+
+      - name: Build with Maven
+        run: mvn clean install -DskipTests
+
       - name: Install Snyk CLI
         run: npm install -g snyk
 
@@ -30,7 +41,7 @@ jobs:
         run: snyk auth $SNYK_TOKEN
 
       - name: Snyk test Java dependencies
-        run: snyk test --severity-threshold=high
+        run: snyk test --severity-threshold=high --all-projects
 
       - name: Generate Snyk JSON Report
         if: always()
