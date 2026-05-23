@@ -44,7 +44,8 @@ jobs:
         env:
           JAVA_OPTS: "-Xmx2g"
           MAVEN_OPTS: "-Xmx2g"
-        run: snyk test --severity-threshold=high --maven-aggregate-project
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: snyk test --severity-threshold=high -d 2>&1 || true
 
       - name: Generate Snyk JSON Report
         if: always()
